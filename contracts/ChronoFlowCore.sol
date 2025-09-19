@@ -52,7 +52,7 @@ contract ChronoFlowCore is ReentrancyGuard {
     /**
      * @notice Calculates the total time duration of a stream in seconds.
      */
-    function _duration(Stream storage stream) internal pure returns (uint256) {
+    function _duration(Stream storage stream) internal view returns (uint256) {
         return stream.stopTime - stream.startTime;
     }
 

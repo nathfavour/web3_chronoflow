@@ -18,7 +18,7 @@ contract StreamNFT is ERC721, Ownable {
     using Strings for uint256;
     ChronoFlowCore public coreContract;
 
-    constructor(address _coreContractAddress) ERC721("ChronoFlow Stream NFT", "CFS") {
+    constructor(address _coreContractAddress) ERC721("ChronoFlow Stream NFT", "CFS") Ownable(msg.sender) {
         coreContract = ChronoFlowCore(_coreContractAddress);
     }
 
@@ -61,8 +61,10 @@ contract StreamNFT is ERC721, Ownable {
         
         string memory attributes = string(abi.encodePacked(
             '{"trait_type": "Payer", "value": "', Strings.toHexString(uint160(payer), 20), '"},',
+            '{"trait_type": "Recipient", "value": "', Strings.toHexString(uint160(recipient), 20), '"},',
             '{"trait_type": "Token Address", "value": "', Strings.toHexString(uint160(address(token)), 20), '"},',
             '{"trait_type": "Total Deposit", "value": ', deposit.toString(), '},',
+            '{"trait_type": "Remaining Balance", "value": ', remainingBalance.toString(), '},',
             '{"trait_type": "Withdrawn Amount", "value": ', withdrawnAmount.toString(), '},',
             '{"trait_type": "Streamable Now", "value": ', streamable.toString(), '},',
             '{"trait_type": "Start Time", "value": ', startTime.toString(), ', "display_type": "date"},',
