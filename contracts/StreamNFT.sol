@@ -23,6 +23,16 @@ contract StreamNFT is ERC721, Ownable {
     }
 
     /**
+     * @notice Allows the contract owner to set the core contract address after deployment.
+     * This is useful to resolve the circular dependency during deployment where the
+     * StreamNFT may be deployed before the ChronoFlowCore is available.
+     */
+    function setCoreContract(address _coreContractAddress) external onlyOwner {
+        require(_coreContractAddress != address(0), "StreamNFT: core address cannot be zero");
+        coreContract = ChronoFlowCore(_coreContractAddress);
+    }
+
+    /**
      * @notice Mints a new NFT. Can only be called by the core contract.
      */
     function mint(address _recipient, uint256 _streamId) external {
