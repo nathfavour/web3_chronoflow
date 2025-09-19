@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./ChronoFlowCore.sol";
 import "./Base64.sol";
 
@@ -17,7 +18,7 @@ contract StreamNFT is ERC721, Ownable {
     using Strings for uint256;
     ChronoFlowCore public coreContract;
 
-    constructor(address _coreContractAddress) ERC721("ChronoFlow Stream NFT", "CFS") Ownable(msg.sender) {
+    constructor(address _coreContractAddress) ERC721("ChronoFlow Stream NFT", "CFS") {
         coreContract = ChronoFlowCore(_coreContractAddress);
     }
 
@@ -42,20 +43,30 @@ contract StreamNFT is ERC721, Ownable {
      * @dev This is the core of the "living" NFT. It fetches live data and encodes it.
      */
     function tokenURI(uint256 _streamId) public view override returns (string memory) {
-        ChronoFlowCore.Stream memory stream = coreContract.streams(_streamId);
+        (
+            address payer,
+            address recipient,
+            uint256 deposit,
+            IERC20 token,
+            uint256 startTime,
+            uint256 stopTime,
+            uint256 remainingBalance,
+            uint256 withdrawnAmount
+        ) = coreContract.streams(_streamId);
+
         uint256 streamable = coreContract.streamableBalanceOf(_streamId);
 
         string memory name = string(abi.encodePacked("ChronoFlow Stream #", _streamId.toString()));
         string memory description = "A real-time, on-chain stream of value. This NFT represents ownership of the future cashflow.";
         
         string memory attributes = string(abi.encodePacked(
-            '{"trait_type": "Payer", "value": "', Strings.toHexString(uint160(stream.payer), 20), '"},',
-            '{"trait_type": "Token Address", "value": "', Strings.toHexString(uint160(address(stream.token)), 20), '"},',
-            '{"trait_type": "Total Deposit", "value": ', stream.deposit.toString(), '},',
-            '{"trait_type": "Withdrawn Amount", "value": ', stream.withdrawnAmount.toString(), '},',
+            '{"trait_type": "Payer", "value": "', Strings.toHexString(uint160(payer), 20), '"},',
+            '{"trait_type": "Token Address", "value": "', Strings.toHexString(uint160(address(token)), 20), '"},',
+            '{"trait_type": "Total Deposit", "value": ', deposit.toString(), '},',
+            '{"trait_type": "Withdrawn Amount", "value": ', withdrawnAmount.toString(), '},',
             '{"trait_type": "Streamable Now", "value": ', streamable.toString(), '},',
-            '{"trait_type": "Start Time", "value": ', stream.startTime.toString(), ', "display_type": "date"},',
-            '{"trait_type": "End Time", "value": ', stream.stopTime.toString(), ', "display_type": "date"}'
+            '{"trait_type": "Start Time", "value": ', startTime.toString(), ', "display_type": "date"},',
+            '{"trait_type": "End Time", "value": ', stopTime.toString(), ', "display_type": "date"}'
         ));
 
         string memory json = string(abi.encodePacked(

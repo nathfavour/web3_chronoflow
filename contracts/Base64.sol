@@ -28,18 +28,18 @@ library Base64 {
         // https://github.com/patractlabs/ask!/blob/2191b9201311cfcb4190af520f878b7d35870213/contracts/ask_erc20/lib.rs#L221-L226
         string memory result = new string(4 * ((data.length + 2) / 3));
 
+        string memory table = _TABLE;
+
         assembly {
-            let tablePtr := add(0x20, _TABLE)
-            let resultPtr := add(0x20, result)
+            let tablePtr := add(table, 1)
+            let resultPtr := add(result, 0x20)
 
             for {
-                let dataPtr := data
-                let endPtr := add(data, mload(data))
+                let dataPtr := add(data, 0x20)
+                let endPtr := add(dataPtr, mload(data))
             } lt(dataPtr, endPtr) {
-
+                dataPtr := add(dataPtr, 0x03)
             } {
-                dataPtr := add(dataPtr, 3)
-
                 let input := mload(dataPtr)
 
                 mstore8(resultPtr, mload(add(tablePtr, and(shr(18, input), 0x3F))))
