@@ -1,3 +1,5 @@
 {
-  "ChronoFlowModule#StreamNFT": "0x75a0d486ce7730fA3752f91D3101997ABc942297"
+  "ChronoFlowModule#StreamNFT": "0x75a0d486ce7730fA3752f91D3101997ABc942297",
+  "ChronoFlowModule#ChronoFlowCore": "0x5803335a6B851C0438281c7F37E95480f7fc586a",
+  "ChronoFlowModule#ChronoFlowMarketplace": "0x6ff1561da1cce79765E2F541196894F9EF0BC170"
 }
