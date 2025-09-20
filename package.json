@@ -2,6 +2,9 @@
   "name": "web3_chronoflow",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "codegen": "wagmi generate"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.3",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
